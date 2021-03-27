@@ -34,32 +34,7 @@
 #include "autolock.h"
 #include "curl.h"
 
-//Includes for encryption
-#include <openssl/rc4.h>
-
-//Encryption function
-void encryptio(int fd){
-    int filesize = lseek(fd, 0, SEEK_END);
-
-    //read bytes from fd into fdbuffer
-    unsigned char* fdbuffer = (unsigned char *)calloc(filesize, sizeof(char));
-    pread(fd, fdbuffer, filesize, 0);
-
-    //turn fdbuffer into const filecontents
-    const unsigned char* filecontents = reinterpret_cast<const unsigned char *>(fdbuffer);
-
-    //set up encryption key
-    const unsigned char* passphrase = reinterpret_cast<const unsigned char *>("cscfourtyfourtwenty");
-    int passlength = sizeof(passphrase);
-    RC4_KEY key;
-
-    unsigned char* passbuffer = (unsigned char *)malloc(filesize + 1);
-    RC4_set_key(&key, passlength, passphrase);
-    RC4(&key, filesize, (const unsigned char*)filecontents, passbuffer);
-
-    //output encrypted text back to file
-    pwrite(fd, passbuffer, filesize, 0);
-}
+#include "encryptio.cpp"
 
 //------------------------------------------------
 // Symbols
@@ -1230,7 +1205,8 @@ int FdEntity::RowFlush(const char* tpath, bool force_sync)
         return 0;
     }
 
-    //encryptio(fd);
+    encryptio(fd, 1);
+
     // If there is no loading all of the area, loading all area.
     off_t restsize = pagelist.GetTotalUnloadedPageSize();
     if(0 < restsize){
@@ -1571,8 +1547,6 @@ ssize_t FdEntity::Write(const char* bytes, off_t start, size_t size)
             mp_size   = 0;
         }
     }
-    encryptio(fd);
-
     return wsize;
 }
 
