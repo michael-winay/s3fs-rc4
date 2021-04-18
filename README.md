@@ -141,6 +141,12 @@ chmod 600 /etc/passwd-s3fs
 
 Note2: You may also need to make sure `netfs` service is start on boot
 
+## Encryption functionality
+
+This code is modified with OpenSSL functionality. The steps to enable it are as follows:
+
+*
+
 ## Limitations
 
 Generally S3 cannot offer the same performance or semantics as a local file system.  More specifically:
