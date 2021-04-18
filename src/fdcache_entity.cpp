@@ -35,7 +35,6 @@
 #include "curl.h"
 
 #include "encryptio.cpp"
-
 //------------------------------------------------
 // Symbols
 //------------------------------------------------
@@ -933,7 +932,9 @@ int FdEntity::Load(off_t start, off_t size, bool lock_already_held, bool is_modi
                 // single request
                 if(0 < need_load_size){
                     S3fsCurl s3fscurl;
+                    //result = s3fscurl.GetObjectRequest(path.c_str(), fd, iter->offset, need_load_size);
                     result = s3fscurl.GetObjectRequest(path.c_str(), fd, iter->offset, need_load_size);
+
                 }else{
                     result = 0;
                 }
@@ -941,11 +942,14 @@ int FdEntity::Load(off_t start, off_t size, bool lock_already_held, bool is_modi
           if(0 != result){
               break;
           }
+          encryptio(fd, 0);
+
           // Set loaded flag
           pagelist.SetPageLoadedStatus(iter->offset, iter->bytes, (is_modified_flag ? PageList::PAGE_LOAD_MODIFIED : PageList::PAGE_LOADED));
-        }
-        PageList::FreeList(unloaded_list);
+        }      
+        PageList::FreeList(unloaded_list);  
     }
+
     return result;
 }
 
@@ -1061,6 +1065,7 @@ int FdEntity::NoCacheLoadAndPost(off_t start, off_t size)
                         break;
                     }
                 }
+
                 // initialize fd without loading
                 if(0 < over_size){
                     if(0 != (result = FdEntity::FillFile(tmpfd, 0, over_size, offset + need_load_size))){
@@ -1477,7 +1482,7 @@ ssize_t FdEntity::Write(const char* bytes, off_t start, size_t size)
                     result = Load(0, start, /*lock_already_held=*/ true);
                 }
             }
-
+//marker
             FdManager::FreeReservedDiskSpace(restsize);
             if(0 != result){
                 S3FS_PRN_ERR("failed to load uninitialized area before writing(errno=%d)", result);
