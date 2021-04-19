@@ -147,9 +147,7 @@ This code is modified with OpenSSL functionality. Files will be encrypted with s
 to change this in the "encryptio.cpp" file.
 
 This source code comes packaged with a standalone utility for encrypting and decrypting files with RC4 (salt and no salt options). The utility is located in
-the /standalone folder.
-
-*
+the standalone/ folder.
 
 ## Limitations
 
