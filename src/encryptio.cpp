@@ -7,7 +7,6 @@
 #include <openssl/rc4.h>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
-#include <openssl/err.h>
 
 using namespace std;
 
@@ -24,7 +23,8 @@ int encryptio (int fd, int enc)
     unsigned char fdbuffer_out[READ_SIZE + EVP_MAX_BLOCK_LENGTH];
 
     //set up encryption key and salt
-    char passphrase[] = "michael";
+    //***change passphrase here***
+    char passphrase[] = "password";
     unsigned char key[keylen];
 
     //generate salt
