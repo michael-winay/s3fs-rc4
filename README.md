@@ -143,7 +143,11 @@ Note2: You may also need to make sure `netfs` service is start on boot
 
 ## Encryption functionality
 
-This code is modified with OpenSSL functionality. The steps to enable it are as follows:
+This code is modified with OpenSSL functionality. Files will be encrypted with salted RC4 on upload to S3 file system. Default passphrase is "password". It is recommended
+to change this in the "encryptio.cpp" file.
+
+This source code comes packaged with a standalone utility for encrypting and decrypting files with RC4 (salt and no salt options). The utility is located in
+the /standalone folder.
 
 *
 
